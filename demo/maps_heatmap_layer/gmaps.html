@@ -1,0 +1,337 @@
+<html>
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<title>heatmap.js GMaps Heatmap Layer</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<style>
+			body, html {
+				margin:0;
+				padding:0;
+				font-family:Arial;
+			}
+			h1 {
+				margin-bottom:10px;
+			}
+			#main {
+				position:relative;
+				width:1020px;
+				padding:20px;
+				margin:auto;
+			}
+			#heatmapArea {
+				position:relative;
+				float:left;
+				width:800px;
+				height:600px;
+				border:1px dashed black;
+			}
+			#configArea {
+				position:relative;
+				float:left;
+				width:200px;
+				padding:15px;
+				padding-top:0;
+				padding-right:0;
+			}
+			.btn {
+				margin-top:25px;
+				padding:10px 20px 10px 20px;
+				-moz-border-radius:15px;
+				-o-border-radius:15px;
+				-webkit-border-radius:15px;
+				border-radius:15px;
+				border:2px solid black;
+				cursor:pointer;
+				color:white;
+				background-color:black;
+			}
+			#gen:hover{
+				background-color:grey;
+				color:black;
+			}
+			textarea{
+				width:260px;
+				padding:10px;
+				height:200px;
+			}
+			h2{
+				margin-top:0;
+			}
+		</style>
+<link rel="shortcut icon" type="image/png" href="http://www.patrick-wied.at/img/favicon.png" />
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+
+</head>
+<body>
+<div id="main">
+			<h1>GMaps Heatmap Overlay</h1>
+			<a href="http://www.patrick-wied.at/static/heatmapjs/" title="heatmap.js">Back to the project page</a><br /><br />
+			<div id="heatmapArea">
+			
+			</div>
+			<div id="configArea">
+				<h2>Sidenotes</h2>
+				This is a demonstration of a canvas heatmap gmaps overlay<br /><br />
+				<strong>Note: this is an early release of the heatmap layer. Please feel free to <a href="https://github.com/pa7/heatmap.js" target="_blank">contribute patches</a>. (e.g: correct datapoint pixels after dragrelease (in draw))</strong>
+				<div id="tog" class="btn">Toggle HeatmapOverlay</div>
+				<div id="gen" class="btn">Add 5 random lat/lng coordinates</div>
+			</div>
+			
+<div style="position:absolute;width:940px;top:750px;text-align:center;"><a href="http://www.patrick-wied.at/static/heatmapjs/">heatmap.js</a> by <a href="http://www.patrick-wied.at" target="_blank">Patrick Wied</a></div>
+
+</div>
+<script type="text/javascript" src="../../src/heatmap.js"></script>
+<script type="text/javascript" src="../../src/heatmap-gmaps.js"></script>
+<script type="text/javascript">
+
+var map;
+var heatmap; 
+
+window.onload = function(){
+
+	var myLatlng = new google.maps.LatLng(48.3333, 16.35);
+	// sorry - this demo is a beta
+	// there is lots of work todo
+	// but I don't have enough time for eg redrawing on dragrelease right now
+	var myOptions = {
+	  zoom: 2,
+	  center: myLatlng,
+	  mapTypeId: google.maps.MapTypeId.ROADMAP,
+	  disableDefaultUI: false,
+	  scrollwheel: true,
+	  draggable: true,
+	  navigationControl: true,
+	  mapTypeControl: false,
+	  scaleControl: true,
+	  disableDoubleClickZoom: false
+	};
+	map = new google.maps.Map(document.getElementById("heatmapArea"), myOptions);
+	
+	heatmap = new HeatmapOverlay(map, {"radius":40, "visible":true, "opacity":80});
+	
+	document.getElementById("gen").onclick = function(){
+		var x = 5;
+		while(x--){
+		
+			var lat = Math.random()*180;
+			var lng = Math.random()*180;
+			var count = Math.floor(Math.random()*180+1);
+			
+			heatmap.addDataPoint(lat,lng,count);
+		
+		}
+	
+	};
+	
+	document.getElementById("tog").onclick = function(){
+		heatmap.toggle();
+	};
+	
+	var testData={
+    		max: 46,
+                data:
+[{lat:37.41761460129,lng:-122.15007660582,count:1},
+{lat:37.299455026809,lng:-122.40607854993,count:1},
+{lat:38.399210752272,lng:-122.35855386272,count:1},
+{lat:33.94350030256,lng:-118.40366553001,count:1},
+{lat:37.762565628477,lng:-122.42150713445,count:1},
+{lat:38.322980230785,lng:-122.31216811154,count:1},
+{lat:37.755092784032,lng:-122.41815832831,count:1},
+{lat:37.764386189533,lng:-122.42179148195,count:1},
+{lat:37.416120426728,lng:-122.07862052168,count:1},
+{lat:37.791076027524,lng:-122.41717964963,count:1},
+{lat:37.761843791873,lng:-122.42168662011,count:1},
+{lat:37.767003922045,lng:-122.42198355131,count:1},
+{lat:37.791945738768,lng:-122.41369889592,count:1},
+{lat:37.799030111512,lng:-122.40887339665,count:1},
+{lat:37.790153216218,lng:-122.39003767437,count:1},
+{lat:37.75811972459,lng:-122.42132050947,count:1},
+{lat:37.761396131355,lng:-122.42590463425,count:1},
+{lat:37.79594944222,lng:-122.42171514188,count:1},
+{lat:37.755262072024,lng:-122.42297974865,count:1},
+{lat:37.444968388893,lng:-122.16139889894,count:1},
+{lat:40.740219684637,lng:-74.005534752481,count:1},
+{lat:40.729416601184,lng:-73.98884343084,count:1},
+{lat:40.741450875871,lng:-74.003409041665,count:1},
+{lat:33.774960637093,lng:-84.364104866982,count:1},
+{lat:33.774452861377,lng:-84.366211182311,count:1},
+{lat:33.787642328349,lng:-84.327043365132,count:1},
+{lat:33.801402876427,lng:-84.279863953868,count:1},
+{lat:33.765261178613,lng:-84.349765574653,count:1},
+{lat:33.774960637093,lng:-84.364104866982,count:1},
+{lat:33.773865767783,lng:-84.363467357859,count:1},
+{lat:33.787964,lng:-84.326791,count:1},
+{lat:33.794015987522,lng:-84.34060465361,count:1},
+{lat:-16.502857223333,lng:-68.13092721,count:1},
+{lat:-16.502857223333,lng:-68.13092721,count:1},
+{lat:26.101761351821,lng:-80.120594485156,count:1},
+{lat:25.770911160762,lng:-80.133738592618,count:1},
+{lat:25.772586857921,lng:-80.140186547076,count:1},
+{lat:29.652433759112,lng:-82.344364284617,count:1},
+{lat:29.651514,lng:-82.326757,count:1},
+{lat:29.65240536671,lng:-82.344720558004,count:1},
+{lat:26.101761351821,lng:-80.120594485156,count:1},
+{lat:26.119189582395,lng:-80.13296241083,count:1},
+{lat:26.101961872976,lng:-80.120513432174,count:1},
+{lat:9.0668143684403,lng:-79.386511540408,count:1},
+{lat:-29.839295590939,lng:-71.277975241328,count:1},
+{lat:-29.946484295524,lng:-71.291302946744,count:1},
+{lat:-12.091770497203,lng:-77.024297252392,count:1},
+{lat:-12.131652992317,lng:-77.023865861628,count:1},
+{lat:-12.109557684128,lng:-77.049742267371,count:1},
+{lat:-12.05107762497,lng:-77.035335140537,count:1},
+{lat:4.6990008209416,lng:-74.143883823711,count:1},
+{lat:40.685147000415,lng:-73.807084526582,count:1},
+{lat:37.447999797003,lng:-122.15957835548,count:1},
+{lat:37.770208995666,lng:-122.46960955462,count:1},
+{lat:37.769760486021,lng:-122.47192631765,count:1},
+{lat:37.750869407914,lng:-122.41824672632,count:1},
+{lat:37.77602,lng:-122.41498,count:1},
+{lat:37.7724847,lng:-122.3914566,count:1},
+{lat:37.600525054384,lng:-122.38201390048,count:1},
+{lat:37.460923405528,lng:-122.13671569159,count:1},
+{lat:37.302503241344,lng:-122.02567766762,count:1},
+{lat:37.424125263685,lng:-122.16787716661,count:1},
+{lat:37.429373109533,lng:-122.16736103506,count:1},
+{lat:37.429373109533,lng:-122.16736103506,count:1},
+{lat:37.414281705,lng:-122.03176614711,count:1},
+{lat:37.414281705,lng:-122.03176614711,count:1},
+{lat:37.376171056314,lng:-122.03028547166,count:1},
+{lat:37.444775890572,lng:-122.1615258453,count:1},
+{lat:37.36985,lng:-122.06499,count:1},
+{lat:37.438241719624,lng:-122.15834920765,count:1},
+{lat:37.302503241344,lng:-122.02567766762,count:1},
+{lat:37.414281705,lng:-122.03176614711,count:1},
+{lat:39.110943,lng:-84.512276,count:1},
+{lat:47.797543810568,lng:-122.32798972121,count:1},
+{lat:47.444060292685,lng:-122.30185068927,count:1},
+{lat:32.898015921086,lng:-97.039056882988,count:1},
+{lat:40.441211811834,lng:-79.957446074891,count:1},
+{lat:40.734414716667,lng:-73.990904159167,count:1},
+{lat:41.976928089113,lng:-87.903559510505,count:1},
+{lat:47.444060292685,lng:-122.30185068927,count:1},
+{lat:47.604512097395,lng:-122.33410867549,count:1},
+{lat:47.618347513198,lng:-122.33907272468,count:1},
+{lat:37.763726603018,lng:-122.4764734867,count:1},
+{lat:37.736599979863,lng:-122.50660031455,count:1},
+{lat:37.763726603018,lng:-122.4764734867,count:1},
+{lat:37.72142893,lng:-121.85902607,count:1},
+{lat:37.735638280818,lng:-122.50295459485,count:1},
+{lat:37.736599979863,lng:-122.50660031455,count:1},
+{lat:37.728099877988,lng:-122.49464951271,count:1},
+{lat:37.645937933333,lng:-122.44829218333,count:1},
+{lat:47.64329736623,lng:-122.13603137992,count:1},
+{lat:25.797174605628,lng:-80.127507194654,count:1},
+{lat:25.817233361116,lng:-80.122777651455,count:1},
+{lat:25.797174605628,lng:-80.127507194654,count:1},
+{lat:28.598458644715,lng:-81.220982769463,count:1},
+{lat:28.078365016003,lng:-80.607595183129,count:1},
+{lat:28.033199467246,lng:-80.622946462711,count:1},
+{lat:28.243298784477,lng:-80.727038776576,count:1},
+{lat:47.67015951,lng:-122.14634519,count:1},
+{lat:47.622139,lng:-122.366676,count:1},
+{lat:47.622990243198,lng:-122.32096884149,count:1},
+{lat:47.614031621425,lng:-122.31721614497,count:1},
+{lat:47.597658957077,lng:-122.326562273,count:1},
+{lat:47.668486262687,lng:-122.38626936743,count:1},
+{lat:37.76301328218,lng:-122.41100714931,count:1},
+{lat:47.63555579135,lng:-122.35723013279,count:1},
+{lat:47.62289424396,lng:-122.33652544841,count:1},
+{lat:47.613311,lng:-122.304778,count:1},
+{lat:45.87448712367,lng:-123.9600278267,count:1},
+{lat:45.895674891999,lng:-123.96121216743,count:1},
+{lat:47.67809006394,lng:-122.20025439069,count:1},
+{lat:47.60820423284,lng:-122.29943618161,count:1},
+{lat:47.615890284728,lng:-122.20337638042,count:1},
+{lat:47.618019075072,lng:-122.30364503896,count:1},
+{lat:47.618,lng:-122.3064,count:1},
+{lat:47.61711,lng:-122.30394,count:1},
+{lat:28.382063495454,lng:-81.424196900411,count:1},
+{lat:28.343498368244,lng:-81.421818648742,count:1},
+{lat:28.539626330035,lng:-81.3832878685,count:1},
+{lat:28.539626330035,lng:-81.3832878685,count:1},
+{lat:28.552598189242,lng:-81.383327284863,count:1},
+{lat:28.342863886443,lng:-81.427876101249,count:1},
+{lat:28.443619608879,lng:-81.471090316772,count:1},
+{lat:28.601910111004,lng:-81.364043994486,count:1},
+{lat:28.36284,lng:-81.42083,count:1},
+{lat:27.992835691244,lng:-82.364092932535,count:1},
+{lat:28.343498368244,lng:-81.421818648742,count:1},
+{lat:28.37119746,lng:-81.42478168,count:1},
+{lat:28.317961340783,lng:-81.540790939704,count:1},
+{lat:28.358572456413,lng:-80.605002849982,count:1},
+{lat:28.443619608879,lng:-81.471090316772,count:1},
+{lat:28.37119746,lng:-81.42478168,count:1},
+{lat:28.332084133154,lng:-81.497347766698,count:1},
+{lat:28.599224662735,lng:-81.350958538956,count:1},
+{lat:28.289900791352,lng:-80.60701866527,count:1},
+{lat:28.382063495454,lng:-81.424196900411,count:1},
+{lat:29.61917613,lng:-82.39618395,count:1},
+{lat:41.796264513913,lng:-107.21505656099,count:1},
+{lat:39.739864547787,lng:-104.96509955186,count:1},
+{lat:29.645440468734,lng:-82.32522209291,count:1},
+{lat:29.650604175352,lng:-82.32515779889,count:1},
+{lat:30.286375861602,lng:-81.50153424625,count:1},
+{lat:29.649718698627,lng:-82.324411555317,count:1},
+{lat:29.636732848225,lng:-82.369937236496,count:1},
+{lat:4.9063227666639,lng:114.91628161457,count:1},
+{lat:51.512192423121,lng:-0.18724992923913,count:1},
+{lat:40.758977953606,lng:-73.97895159601,count:1},
+{lat:40.751026755332,lng:-73.968590741276,count:1},
+{lat:40.758107033743,lng:-73.98555055563,count:1},
+{lat:38.693219865129,lng:-121.59064361841,count:1},
+{lat:38.283187954708,lng:-122.28725466275,count:1},
+{lat:4.9054920357143,lng:114.91710597571,count:1},
+{lat:4.9393185813541,lng:114.93966696196,count:1},
+{lat:3.1441715816924,lng:101.70564719471,count:1},
+{lat:26.088181575015,lng:-80.251380326233,count:1},
+{lat:26.071928500833,lng:-80.142485235562,count:1},
+{lat:40.729451256799,lng:-73.989780163617,count:1},
+{lat:40.727155466891,lng:-73.993151419681,count:1},
+{lat:40.771060976811,lng:-73.861195161749,count:1},
+{lat:19.36967625,lng:-81.272757306667,count:1},
+{lat:26.03634,lng:-80.24908,count:1},
+{lat:26.228797394119,lng:-80.103028076285,count:1},
+{lat:26.283973094388,lng:-80.188410583396,count:1},
+{lat:26.189604754466,lng:-80.127380385814,count:1},
+{lat:26.265978,lng:-80.10009,count:1},
+{lat:26.228797394119,lng:-80.103028076285,count:1},
+{lat:26.122382159307,lng:-80.104239662361,count:1},
+{lat:26.045735513556,lng:-80.261383385762,count:1},
+{lat:26.180372246254,lng:-80.119950369182,count:1},
+{lat:26.189598405,lng:-80.096904393333,count:1},
+{lat:26.045735513556,lng:-80.261383385762,count:1},
+{lat:26.275221931911,lng:-80.096088783346,count:1},
+{lat:24.923801611579,lng:-80.628646592423,count:1},
+{lat:26.1490876,lng:-80.2861469,count:1},
+{lat:29.23849132846,lng:-81.013734787778,count:1},
+{lat:29.67344440284,lng:-82.337749523204,count:1},
+{lat:27.992835691244,lng:-82.364092932535,count:1},
+{lat:41.787494432871,lng:-87.7434945966,count:1},
+{lat:41.711952236361,lng:-88.067151887438,count:1},
+{lat:28.450818769718,lng:-81.4793429322,count:1},
+{lat:26.088003120085,lng:-80.120049786602,count:1},
+{lat:26.088003120085,lng:-80.120049786602,count:1},
+{lat:27.768364470682,lng:-82.653000546266,count:1},
+{lat:28.368425038717,lng:-81.426278307688,count:1},
+{lat:41.946644535873,lng:-87.656221210792,count:1},
+{lat:41.787494432871,lng:-87.7434945966,count:1},
+{lat:26.782081966854,lng:-80.03402332469,count:1},
+{lat:26.71352377,lng:-80.04913382,count:1},
+{lat:26.71352377,lng:-80.04913382,count:1},
+{lat:28.368425038717,lng:-81.426278307688,count:1},
+{lat:26.685565310897,lng:-80.187351252221,count:1},
+{lat:28.242217310562,lng:-80.601435828774,count:1},
+{lat:28.36628895014,lng:-81.356693944688,count:1}]
+    	};
+    
+	// this is important, because if you set the data set too early, the latlng/pixel projection doesn't work
+	google.maps.event.addListenerOnce(map, "idle", function(){
+		heatmap.setDataSet(testData);
+	});
+
+};
+
+</script>
+</body>
+</html>
